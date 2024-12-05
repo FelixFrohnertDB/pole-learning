@@ -42,8 +42,8 @@ def extract_feature_list_from_subset(features_intensity, features_energies):
 
     data_df['id'] = np.repeat(np.arange(subset_intensities.shape[0]),subset_intensities.shape[1])
     data_df['time'] = np.tile(np.arange(subset_intensities.shape[1]), subset_intensities.shape[0])
-    data_df['energy'] = subset_intensities.flatten()
-    data_df['intensity'] = subset_energies.flatten()
+    data_df['intensity'] = subset_intensities.flatten()
+    data_df['energy'] = subset_energies.flatten()
     data_df.to_parquet('dataExt/subsample_data_df.parquet')
 
     labels_df['labels'] = label_arr[::subsample_inx]
@@ -68,7 +68,7 @@ def extract_feature_list_from_subset(features_intensity, features_energies):
     
     return kind_to_fc_parameters, features_filtered.shape[1], features_filtered
 
-kind_to_fc_parameters, n_features, features_filtered = extract_feature_list_from_subset(all_x, all_y)
+kind_to_fc_parameters, n_features, features_filtered = extract_feature_list_from_subset(all_y, all_x)
 
 def extract_features_from_full(features_intensity, features_energies, kind_to_fc_parameters, n_samples, n_features):
     
@@ -81,8 +81,8 @@ def extract_features_from_full(features_intensity, features_energies, kind_to_fc
 
     data_df['id'] = np.repeat(np.arange(subset_intensities.shape[0]),subset_intensities.shape[1])
     data_df['time'] = np.tile(np.arange(subset_intensities.shape[1]), subset_intensities.shape[0])
-    data_df['energy'] = subset_intensities.flatten()
-    data_df['intensity'] = subset_energies.flatten()
+    data_df['intensity'] = subset_intensities.flatten()
+    data_df['energy'] = subset_energies.flatten()
     data_df.to_parquet('dataExt/data_df.parquet')
 
     labels_df['labels'] = label_arr
@@ -102,3 +102,5 @@ def extract_features_from_full(features_intensity, features_energies, kind_to_fc
     result = X.compute()
 
     np.save("dataExt/features_filtered.npy", np.reshape(result["value"].to_numpy(), (n_samples, n_features)))
+
+extract_features_from_full(all_y, all_x, kind_to_fc_parameters, n_samples, n_features)
