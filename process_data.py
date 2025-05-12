@@ -102,5 +102,6 @@ def extract_features_from_full(features_intensity, features_energies, kind_to_fc
     result = X.compute()
 
     np.save("dataExt/features_filtered.npy", np.reshape(result["value"].to_numpy(), (n_samples, n_features)))
+    np.save("dataExt/feature_names.npy", features_filtered.columns.to_numpy())
 
 extract_features_from_full(all_y, all_x, kind_to_fc_parameters, n_samples, n_features)
