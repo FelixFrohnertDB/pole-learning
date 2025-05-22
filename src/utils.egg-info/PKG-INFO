@@ -1,0 +1,27 @@
+Metadata-Version: 2.4
+Name: utils
+Version: 0.1.0
+Summary: Utils to process data
+Home-page: https://github.com/FelixFrohnertDB/pole-learning
+Author: Felix Frohnert
+License: Apache 2.0
+Keywords: Machine Learning
+Classifier: Development Status :: 3 - Alpha
+Classifier: Programming Language :: Python :: 3.11
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Intended Audience :: Science/Research
+Provides: utils
+Description-Content-Type: text/markdown
+Requires-Dist: numpy==1.26.4
+Dynamic: author
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: provides
+Dynamic: requires-dist
+Dynamic: summary
+
+# pole-learning

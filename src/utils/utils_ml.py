@@ -318,3 +318,25 @@ def plot_predictions_with_confidence(df,):
     # ax.set_title("Predicted Distributions with Confidence Bounds")
     plt.grid(True, linestyle="--", alpha=0.3)
     plt.show()
+
+def plot_cm(y_true, y_pred, class_to_poles):
+
+    custom_labels = [str(class_to_poles[i]) for i in range(len(class_to_poles))]
+    cm = confusion_matrix(y_true, y_pred, labels=np.arange(np.unique(y_true).shape[0]))
+
+    # Plot the confusion matrix
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=np.arange(np.unique(y_true).shape[0]))
+    fig, ax = plt.subplots(figsize=(5, 5))  # Adjust figure size if needed
+    disp.plot(ax=ax)
+
+    # Update x and y axis tick labels with the custom labels
+    ax.set_xticks(np.arange(len(custom_labels)))
+    ax.set_yticks(np.arange(len(custom_labels)))
+    ax.set_xticklabels(custom_labels, rotation=45, ha='right', fontsize=10)
+    ax.set_yticklabels(custom_labels, fontsize=10)
+
+    # Adjust layout for readability
+    plt.tight_layout()
+    plt.show()
+
+    print("Acc:",accuracy_score(y_true,y_pred))
