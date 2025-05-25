@@ -14,7 +14,7 @@ from sklearn.multioutput import ClassifierChain
 
 
 # Automatically find the matching file
-input_files = glob.glob('features_selected*.npy')
+input_files = glob.glob('training_features_128*.npy')
 if not input_files:
     raise FileNotFoundError("No features_filtered*.npy file found in current directory")
 input_path = input_files[0]
@@ -241,7 +241,7 @@ for fold, (train_index, val_index) in enumerate(kf.split(X_arr)):
     y_train = y_arr_regression[train_index]
     y_val = y_arr_regression[val_index]
 
-    base_clf = WrappedCatBoost(loss_function='MultiClass', iterations=2000, random_seed=42)
+    base_clf = WrappedCatBoost(loss_function='MultiClass', iterations=1000, random_seed=42+fold)
 
     # Use custom classifier chain with eval_set support
     chain = EvalClassifierChain(base_estimator=base_clf, order=[0, 1, 2])

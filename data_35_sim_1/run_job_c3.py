@@ -9,7 +9,7 @@ import sys
 
 
 # Automatically find the matching file
-input_files = glob.glob('features_selected*.npy')
+input_files = glob.glob('training_features_128*.npy')
 if not input_files:
     raise FileNotFoundError("No features_filtered*.npy file found in current directory")
 input_path = input_files[0]
@@ -98,7 +98,8 @@ for fold, (train_index, val_index) in enumerate(kf.split(X_arr)):
         model = CatBoostClassifier(
             iterations=1000,
             verbose=100,
-            early_stopping_rounds=10
+            early_stopping_rounds=10,
+            random_seed=42+fold
         )
 
         model.fit(
@@ -109,7 +110,7 @@ for fold, (train_index, val_index) in enumerate(kf.split(X_arr)):
         )
 
         # Save model
-        model_path = f"models/catboost_model_{pole}_fold{fold}.cbm"
+        model_path = f"models/catboost_model_c3_{pole}_fold{fold}.cbm"
         model.save_model(model_path)
 
         # Predict and evaluate
@@ -122,7 +123,7 @@ for fold, (train_index, val_index) in enumerate(kf.split(X_arr)):
         del model, X_train, X_val, y_train, y_val
         gc.collect()
 
-with open("fold_accuracies_per_pole.pkl", "wb") as f:
+with open("fold_accuracies_c3.pkl", "wb") as f:
     pickle.dump(fold_accuracies, f)
 
 

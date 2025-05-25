@@ -9,7 +9,7 @@ import sys
 
 
 # Automatically find the matching file
-input_files = glob.glob('features_selected*.npy')
+input_files = glob.glob('training_features_128*.npy')
 if not input_files:
     raise FileNotFoundError("No features_filtered*.npy file found in current directory")
 input_path = input_files[0]
@@ -86,7 +86,8 @@ for fold, (train_index, val_index) in enumerate(kf.split(X_arr)):
     model = CatBoostClassifier(
         iterations=1000,
         verbose=100,
-        early_stopping_rounds=10
+        early_stopping_rounds=10,
+        random_seed=42+fold
     )
 
     model.fit(

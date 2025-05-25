@@ -14,7 +14,7 @@ from sklearn.multioutput import ClassifierChain
 
 
 # Automatically find the matching file
-input_files = glob.glob('features_selected*.npy')
+input_files = glob.glob('training_features_128*.npy')
 if not input_files:
     raise FileNotFoundError("No features_filtered*.npy file found in current directory")
 input_path = input_files[0]
@@ -388,7 +388,7 @@ for fold, (train_index, val_index) in enumerate(kf.split(X_arr)):
     y_train = y_arr_regression[train_index]
     y_val = y_arr_regression[val_index]
 
-    base_model = EnsembleWrapper(esize=5, iterations=1000, seed=42)  # Small values for quick testing
+    base_model = EnsembleWrapper(esize=5, iterations=1000, seed=42+fold)  # Small values for quick testing
     
     # Classifier chain with uncertainty-aware base models
     chain = EvalClassifierChain(base_estimator=base_model, order=[0, 1, 2])
