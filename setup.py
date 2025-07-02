@@ -4,8 +4,14 @@ from setuptools import setup, find_packages
 version = "0.1.0"
 
 requirements = [
-    "numpy==1.26.4"
-]
+    "catboost==1.2.7",
+    "matplotlib==3.10.3",
+    "numpy==2.3.1",
+    "pandas==2.3.0",
+    "scikit_learn==1.7.0",
+    "scipy==1.16.0",
+    "seaborn==0.13.2",
+    "tqdm==4.66.5"]
 
 info = {
     "name": "utils",
