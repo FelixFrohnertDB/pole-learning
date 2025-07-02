@@ -4,7 +4,6 @@ import pickle
 import glob
 from sklearn.model_selection import train_test_split, KFold
 from sklearn.metrics import accuracy_score
-from sklearn.feature_selection import VarianceThreshold
 from catboost import CatBoostClassifier
 import sys
 
@@ -89,7 +88,11 @@ else:
     output_path = f'full_features_sorted_{n_samples}_{n_features}_{identifier}.npy'
     X_arr = np.memmap(output_path, dtype='float32', mode='r', shape=(n_samples, n_features))
 
+indices = np.arange(350_000)
+train_idx, test_idx = train_test_split(indices, test_size=0.2, random_state=42, shuffle=True)
 
+y_arr_classification = y_arr_classification[train_idx]
+X_arr = X_arr[train_idx]
 
 print("Starting cross-validation with different feature counts...")
 # Define feature counts to test using log-spaced percentages
@@ -144,9 +147,9 @@ for d in feature_counts:
             gc.collect()
 
     # Save fold accuracies
-    # acc_file = f"fold_accuracies_{d}_{identifier}.pkl" if not raw else f"fold_accuracies_{d}_raw_{identifier}.pkl"
-    # with open(acc_file, "wb") as f:
-    #     pickle.dump({d: fold_accuracies}, f)
+    acc_file = f"fold_accuracies_{d}_{identifier}.pkl" if not raw else f"fold_accuracies_{d}_raw_{identifier}.pkl"
+    with open(acc_file, "wb") as f:
+        pickle.dump({d: fold_accuracies}, f)
     
 
 print("Pipeline execution complete!")

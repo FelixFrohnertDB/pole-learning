@@ -117,7 +117,12 @@ y_arr_classification = np.array([
     for i in np.arange(num_files)
 ]).flatten()
 
-y_arr_regression = convert_labels(y_arr_classification, class_to_poles) * 1.0
+indices = np.arange(350_000)
+train_idx, test_idx = train_test_split(indices, test_size=0.2, random_state=42, shuffle=True)
+
+y_arr_r = convert_labels(y_arr_classification, class_to_poles) [train_idx]
+
+X_arr = X_arr[train_idx]
 
 class Ensemble(object):
     
@@ -385,8 +390,8 @@ for fold, (train_index, val_index) in enumerate(kf.split(X_arr)):
     
     X_train = X_arr[train_index].astype(np.float32)
     X_val = X_arr[val_index].astype(np.float32)
-    y_train = y_arr_regression[train_index]
-    y_val = y_arr_regression[val_index]
+    y_train = y_arr_r[train_index]
+    y_val = y_arr_r[val_index]
 
     base_model = EnsembleWrapper(esize=5, iterations=1000, seed=42+fold)  # Small values for quick testing
     

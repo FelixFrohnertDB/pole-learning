@@ -4,7 +4,7 @@ import pickle
 import glob
 from sklearn.model_selection import train_test_split, KFold
 from sklearn.metrics import accuracy_score
-from catboost import CatBoostClassifier, Pool
+from catboost import CatBoostClassifier
 import sys
 import os 
 import joblib
@@ -117,7 +117,14 @@ y_arr_classification = np.array([
     for i in np.arange(num_files)
 ]).flatten()
 
-y_arr_regression = convert_labels(y_arr_classification, class_to_poles) * 1.0
+
+indices = np.arange(350_000)
+train_idx, test_idx = train_test_split(indices, test_size=0.2, random_state=42, shuffle=True)
+
+y_arr_r = convert_labels(y_arr_classification, class_to_poles) [train_idx]
+
+X_arr = X_arr[train_idx]
+
 
 class WrappedCatBoost(BaseEstimator, ClassifierMixin):
     def __init__(self, **params):
@@ -238,8 +245,8 @@ for fold, (train_index, val_index) in enumerate(kf.split(X_arr)):
     
     X_train = X_arr[train_index].astype(np.float32)
     X_val = X_arr[val_index].astype(np.float32)
-    y_train = y_arr_regression[train_index]
-    y_val = y_arr_regression[val_index]
+    y_train = y_arr_r[train_index]
+    y_val = y_arr_r[val_index]
 
     base_clf = WrappedCatBoost(loss_function='MultiClass', iterations=1000, random_seed=42+fold)
 
@@ -251,7 +258,7 @@ for fold, (train_index, val_index) in enumerate(kf.split(X_arr)):
 
     # Predict
     y_pred = chain.predict(X_val)
-    acc = accuracy_score(reconvert_labels(y_pred,class_to_poles),reconvert_labels(y_val,class_to_poles))
+    acc = accuracy_score(reconvert_labels(y_pred, class_to_poles),reconvert_labels(y_val, class_to_poles))
 
     model_path = f"models/catboost_model_c3r_fold{fold}"
     chain.save_chain(model_path)

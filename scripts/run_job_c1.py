@@ -3,10 +3,7 @@ import gc
 import pickle
 import glob
 from sklearn.model_selection import train_test_split, KFold
-from sklearn.metrics import accuracy_score
-from catboost import CatBoostClassifier, Pool
-import sys
-
+from catboost import CatBoostClassifier
 
 # Automatically find the matching file
 input_files = glob.glob('training_features_128*.npy')
@@ -70,6 +67,11 @@ y_arr_classification = np.array([
     for i in np.arange(num_files)
 ]).flatten()
 
+indices = np.arange(350_000)
+train_idx, test_idx = train_test_split(indices, test_size=0.2, random_state=42, shuffle=True)
+
+y_arr_classification = y_arr_classification[train_idx]
+X_arr = X_arr[train_idx]
 
 
 fold_accuracies = []

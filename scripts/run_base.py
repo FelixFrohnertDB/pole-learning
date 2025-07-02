@@ -2,7 +2,7 @@ import numpy as np
 import gc
 import pickle
 import glob
-from sklearn.model_selection import train_test_split, KFold
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.feature_selection import VarianceThreshold
 from catboost import CatBoostClassifier
@@ -150,8 +150,6 @@ y_arr_classification = np.array([
     for i in np.arange(num_files)
 ]).flatten()
 
-# Convert labels to regression format
-# y_arr_regression = convert_labels(y_arr_classification, class_to_poles) * 1.0
 
 # Train initial model to get feature importance
 print("Training initial model for feature importance...")
@@ -163,7 +161,7 @@ rg = CatBoostClassifier(
 
 # Split data
 X_train, X_val, y_train, y_val = train_test_split(
-    X_arr, y_arr_classification, random_state=42, test_size=0.8
+    X_arr, y_arr_classification, random_state=42, test_size=0.2
 )
 
 # Fit model
@@ -212,68 +210,3 @@ gc.collect()  # force cleanup
 
 acc = accuracy_score(rg.predict(X_val),y_val)
 print("Done: Acc", acc)
-
-# # Step 6: Reload reordered array with memory-mapping
-# print("Loading sorted features...")
-# X_arr = np.memmap(output_path, dtype='float32', mode='r', shape=(n_samples, n_features))
-
-# print("Starting cross-validation with different feature counts...")
-# # Define feature counts to test using log-spaced percentages
-# feature_percentages = np.logspace(-2, 0, 5)[-1]  # From 1% to 100% of features
-# feature_counts = np.unique(
-#     np.clip((feature_percentages * X_arr.shape[1]).astype(int), 1, X_arr.shape[1])
-# )
-
-# # Loop through different feature counts
-# for d in feature_counts:
-#     print(f"\nEvaluating with top {d} features ({d/X_arr.shape[1]*100:.2f}% of total)")
-#     fold_accuracies = []
-
-#     # Use k-fold cross-validation
-#     kf = KFold(n_splits=5, shuffle=True, random_state=42)
-#     for fold, (train_index, val_index) in enumerate(kf.split(X_arr)):
-#         print(f"  Fold {fold+1}/5")
-#         # Extract current fold data with selected feature count
-#         X_train, X_val = X_arr[train_index][:, :d], X_arr[val_index][:, :d]
-#         y_train, y_val = y_arr_regression[train_index], y_arr_regression[val_index]
-
-#         # Train model
-#         model = CatBoostRegressor(
-#             iterations=1000,
-#             verbose=0,
-#             loss_function="MultiRMSE",
-#             early_stopping_rounds=10
-#         )
-
-#         model.fit(
-#             X_train, y_train, 
-#             eval_set=(X_val, y_val), 
-#             use_best_model=True,
-#             plot=False
-#         )
-
-#         # Save model
-#         model_path = f"models/catboost_model_{d}_fold{fold}.cbm" if not raw else f"models/catboost_model_{d}_fold{fold}_raw.cbm"
-#         model.save_model(model_path)
-#         print(f"  Model saved to {model_path}")
-
-#         # Predict and evaluate
-#         y_pred = np.abs(np.round(model.predict(X_val)))
-#         acc = accuracy_score(
-#             reconvert_labels(y_pred, class_to_poles),
-#             reconvert_labels(y_val, class_to_poles)
-#         )
-#         fold_accuracies.append(acc)
-#         print(f"  Fold accuracy: {acc:.4f}")
-
-#         # Clean up
-#         del model, X_train, X_val, y_train, y_val
-#         gc.collect()
-
-#     # Save fold accuracies
-#     acc_file = f"fold_accuracies_{d}.pkl" if not raw else f"fold_accuracies_{d}_raw.pkl"
-#     with open(acc_file, "wb") as f:
-#         pickle.dump({d: fold_accuracies}, f)
-    
-
-# print("Pipeline execution complete!")

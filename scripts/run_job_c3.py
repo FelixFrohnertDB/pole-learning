@@ -3,10 +3,7 @@ import gc
 import pickle
 import glob
 from sklearn.model_selection import train_test_split, KFold
-from sklearn.metrics import accuracy_score
-from catboost import CatBoostClassifier, Pool
-import sys
-
+from catboost import CatBoostClassifier
 
 # Automatically find the matching file
 input_files = glob.glob('training_features_128*.npy')
@@ -72,10 +69,16 @@ y_arr_classification = np.array([
 
 # Map class index to individual position labels
 print("Mapping class indices to individual pole positions...")
+
+indices = np.arange(350_000)
+train_idx, test_idx = train_test_split(indices, test_size=0.2, random_state=42, shuffle=True)
+
 class_to_poles_arr = np.array([class_to_poles[i] for i in range(num_files)])
-y_bt = class_to_poles_arr[y_arr_classification][:, 0]
-y_bb = class_to_poles_arr[y_arr_classification][:, 1]
-y_tb = class_to_poles_arr[y_arr_classification][:, 2]
+y_bt = class_to_poles_arr[y_arr_classification][:, 0] [train_idx]
+y_bb = class_to_poles_arr[y_arr_classification][:, 1] [train_idx]
+y_tb = class_to_poles_arr[y_arr_classification][:, 2] [train_idx]
+
+X_arr = X_arr[train_idx]
 
 del y_arr_classification 
 
