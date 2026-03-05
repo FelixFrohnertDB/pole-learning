@@ -43,7 +43,7 @@ If you use this code or the associated data in your research, feel free to cite 
 
 ## Dataset Hierarchy (GitHub Releases)
 
-Data artifacts provided in the [Releases](https://www.google.com/search?q=../../releases) section are organized by source (e.g., `Data-Training` for synthetic samples or `Data-Delta1232`). Each release follows this standard hierarchy:
+Data artifacts provided in the [Releases](https://github.com/FelixFrohnertDB/pole-learning/releases/tag/v1.0) section are organized by source (e.g., `Data-Training` for synthetic samples or `Data-Delta1232`). Each release follows this standard hierarchy:
 
 ```text
 <Dataset-Name>/
